@@ -1,6 +1,5 @@
-[
 {
-  "nameOfDish": "Soup",
+  "dishName": "Soup",
   "creationDateTime": "01‐01‐2022 09:00",
   "suitableFor": 1,
   "instructions": "Boil water add vegetables and heat ",
@@ -18,29 +17,5 @@
  "name": "Water"
 }
   ],
-  
   "veg": false
-},
-
-{
-  "nameOfDish": "Bread Omlette",
-  "creationDateTime": "01‐01‐2022 09:00",
-  "suitableFor": 2,
-  "instructions": "Heat pan. Break egg and toast bread ",
-  "ingredients": [
-
-{
- "name": "Bread"
 }
-,
-{
- "name": "Egg"
-}
-,
-{
- "name": "Salt"
-}
-  ],
- 
-  "veg": false
-}]

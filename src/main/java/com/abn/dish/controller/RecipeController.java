@@ -34,6 +34,7 @@ import com.abn.dish.impl.RecipeMappers;
 import com.abn.dish.service.RecipeService;
 import com.google.gson.Gson;
 
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,6 +55,7 @@ public class RecipeController {
 	 private static final Gson gson = new Gson();
 
 	@Operation(summary = "Create a recipe")
+	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@PostMapping
 	public ResponseEntity<DishcreateDto> createRecipe(@RequestBody @Valid DishcreateDto dishDto) {
 		log.debug("Create recipe for {}", dishDto.getDishName());
@@ -62,9 +64,10 @@ public class RecipeController {
 	}
 
 	@Operation(summary = "Update a recipe")
+	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@PutMapping
 	 @ApiResponses(value = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation =
-     DishDto.class))), @ApiResponse(responseCode = "404", description = "Consultant not found", content
+     DishDto.class))), @ApiResponse(responseCode = "404", description = "Dish not found", content
      = @Content(schema = @Schema(hidden = true)))})
 	public ResponseEntity<DishDto> updateRecipe(@RequestBody @Valid DishDto dishDto) throws RecipeNotFoundException {
 		log.debug("Update recipe {}", dishDto.getId());
@@ -75,14 +78,16 @@ public class RecipeController {
 
 	@DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteRecipeById(@PathVariable Long id) throws RecipeNotFoundException {
-        log.debug("Delete consultant by id {}", id);
+        log.debug("Delete recipe by id {}", id);
         recipeService.deleteRecipeById(id);
         return ResponseEntity.ok(gson.toJson(Constants.DISH_DELETE+id));
     }
 	
 	@Operation(summary = "Get recipes based any condition", description = "gets the recipe info based on different search params")
+	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@GetMapping(value = "/searchrecipe")
-	public ResponseEntity<Page<DishDto>> getRecipe( @RequestParam(required=true) @DateTimeFormat(pattern="dd‐MM‐yyyy HH:mm") LocalDateTime  createdDate,
+	public ResponseEntity<Page<DishDto>> getRecipe( 
+			@RequestParam(required=true) @DateTimeFormat(pattern="dd‐MM‐yyyy HH:mm") LocalDateTime  createdDate,
 			@RequestParam(required=true) boolean isVeg,
 			@RequestParam(required=true) int suitableFor,
 			@RequestParam(required= true) List <String> ingredients,

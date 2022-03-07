@@ -1,16 +1,9 @@
 
 package com.abn.dish.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -32,16 +25,13 @@ import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.abn.dish.dto.DishDto;
@@ -49,7 +39,6 @@ import com.abn.dish.dto.DishcreateDto;
 import com.abn.dish.dto.IngredientsDto;
 import com.abn.dish.entitites.Dish;
 import com.abn.dish.exception.RecipeNotFoundException;
-import com.abn.dish.repo.IngredientRepo;
 import com.abn.dish.repo.RecipeRepo;
 
 @SpringBootTest
@@ -74,7 +63,7 @@ class RecipeServiceImplTest {
 	@Mock
 	private Dish dish;
 	@Mock
-	private DishDto dishdto;
+	private DishDto dishupdatedto;
 
 	@Mock
 	private IngredientsDto ingre;
@@ -105,11 +94,15 @@ class RecipeServiceImplTest {
 		mockservice = new RecipeServiceImpl(mockReciperepo);
 	}
 
+	
+	/**
+ *  Scenario to verify creation in via service
+ */
 	@Test
 
 	@DisplayName("Create receipe")
 	void testCreateRecipe() {
-
+		
 		when(mockReciperepo.save(Mockito.any(Dish.class))).thenReturn(dish);
 		DishcreateDto returned = mockservice.createRecipe(dishcreate);
 		Dish dish = xMapper.INSTANCE.mapDishRequest(returned);
@@ -118,32 +111,31 @@ class RecipeServiceImplTest {
 		assertEquals(dishcreate.getDishName(), dish.getNameOfDish());
 
 	}
-
+	
+	/**
+ *  Scenario to verify exception while receipe update via service
+	 * @throws RecipeNotFoundException 
+ */
 	@Test
 
 	@DisplayName("updating receipe")
-	void testUpdateRecipe() {
-
-		Optional<Dish> returned = mockReciperepo.findById(Mockito.any(Long.class));
-
-		verify(mockReciperepo, times(1)).findById(dish.getId());
-		verifyNoMoreInteractions(mockReciperepo);
-
-		assertEquals(dishdto, returned);
+	void testUpdateRecipe() throws RecipeNotFoundException {
+		DishDto dishdto=new DishDto();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+		LocalDateTime dateTime = LocalDateTime.parse("01-01-2022 09:00", formatter);
+		dishdto.setCreationDateTime(dateTime);
+		dishdto.setInstructions("heat");
+		dishdto.setDishName("anything");
+		dishdto.setSuitableFor(1);
+		dishdto.setVeg(false);
+		dishdto.setId(1L);
+		ingre.setName("Onion");
+		ingre.setName("Tomato");
+		dishdto.setIngredients(ingsets);
+		when(mockReciperepo.findById(Mockito.any(Long.class))).thenReturn(Optional.<Dish>empty());
+		Throwable exception = assertThrows(RecipeNotFoundException.class, () -> {
+			mockservice.updateRecipe(dishdto);
+		});
+		assertEquals("receipe ID not found :1", exception.getMessage());
 	}
-
-	@Test
-
-	@DisplayName("Delete receipe")
-	void testDeleteRecipeById() {
-
-	}
-
-	@Test
-
-	@DisplayName("find receipe by condition")
-	void testFindByCriteria() {
-
-	}
-
 }
