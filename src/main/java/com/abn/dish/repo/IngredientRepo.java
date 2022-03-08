@@ -8,7 +8,7 @@ import com.abn.dish.entitites.Ingredients;
 
 @Repository
 public interface IngredientRepo extends JpaRepository<Ingredients, Long>,JpaSpecificationExecutor<Ingredients> {
-	
+
 
 
 }

@@ -74,26 +74,26 @@ class RecipeControllerTest {
 	private RecipeRepo recipeRepo;
 	@Autowired
 	private WebApplicationContext context;
-	 private List<Dish> dishList;
-	 
-	 
+	private List<Dish> dishList;
+
+
 
 	@BeforeEach
 	void setUp() {
 		dishList = Utils.loadData(Dish.class);
-	        Optional.of(dishList)
-	                .ifPresent(cs -> dishList = recipeRepo.saveAll(cs));
+		Optional.of(dishList)
+		.ifPresent(cs -> dishList = recipeRepo.saveAll(cs));
 		MockitoAnnotations.openMocks(this);
 		mockservice = new RecipeServiceImpl(recipeRepo);
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(SecurityMockMvcConfigurers.springSecurity())
 				.build();
 
 	}
-/**
- * Test to check if receipe is created from controller
- * @throws JsonProcessingException
- * @throws Exception
- */
+	/**
+	 * Test to check if receipe is created from controller
+	 * @throws JsonProcessingException
+	 * @throws Exception
+	 */
 	@Test
 	@WithMockUser(username = "dummy", roles = "user")
 	void testCreateRecipe() throws JsonProcessingException, Exception {
@@ -122,7 +122,7 @@ class RecipeControllerTest {
 				+ "}\r\n" + "  ],\r\n" + "  \"id\": 0,\r\n" + "  \"veg\": false\r\n" + "}";
 		mockMvc.perform(post(API_V1_DISH).content(content)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
-				.andExpect(status().isOk());
+		.andExpect(status().isOk());
 
 	}
 	/**
@@ -130,14 +130,14 @@ class RecipeControllerTest {
 	 * @throws JsonProcessingException
 	 * @throws Exception
 	 */
-	
+
 	@Test
 	@WithMockUser(username = "dummy", roles = "user")
-    void deleteRecipeByIdSuccess() throws Exception {
-        mockMvc.perform(delete(API_V1_DISH + dishList.get(0).getId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+	void deleteRecipeByIdSuccess() throws Exception {
+		mockMvc.perform(delete(API_V1_DISH + dishList.get(0).getId())
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk());
+	}
 
 	/**
 	 * Test to check if exception is thrown while delete from controller
@@ -149,10 +149,10 @@ class RecipeControllerTest {
 	void testDeleteRecipeByIdFail() throws Exception {
 		long randomId = (long) (Math.random() * 100);
 		mockMvc.perform(delete(API_V1_DISH +"/"+ randomId).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(
-						result -> assertThat(result.getResolvedException()).isInstanceOf(RecipeNotFoundException.class))
-				.andExpect(result -> assertThat(Objects.requireNonNull(result.getResolvedException()).getMessage())
-						.isEqualTo("receipe ID not found :" + randomId ));
+		.andExpect(
+				result -> assertThat(result.getResolvedException()).isInstanceOf(RecipeNotFoundException.class))
+		.andExpect(result -> assertThat(Objects.requireNonNull(result.getResolvedException()).getMessage())
+				.isEqualTo("receipe ID not found :" + randomId ));
 	}
 	/**
 	 * Test to search receipe from controller
@@ -163,9 +163,9 @@ class RecipeControllerTest {
 	@WithMockUser(username = "dummy", roles = "user")
 	void testGetRecipe() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/dish/searchrecipe?createdDate=01‐01‐2022 09:00&isVeg=false&suitableFor=1&ingredients=Carrot&instructions=add")
-		
-						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk());
 
 	}
 

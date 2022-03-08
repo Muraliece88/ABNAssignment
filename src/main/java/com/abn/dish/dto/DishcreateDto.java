@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class DishcreateDto {
-	
+
 	private String dishName;
 	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd‐MM‐yyyy HH:mm")
 	private LocalDateTime creationDateTime;

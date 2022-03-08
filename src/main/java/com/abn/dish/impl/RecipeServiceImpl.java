@@ -10,7 +10,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.mapstruct.factory.Mappers;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,9 +20,7 @@ import com.abn.dish.constant.Constants;
 import com.abn.dish.dto.DishDto;
 import com.abn.dish.dto.DishcreateDto;
 import com.abn.dish.entitites.Dish;
-import com.abn.dish.entitites.Ingredients;
 import com.abn.dish.exception.RecipeNotFoundException;
-import com.abn.dish.repo.IngredientRepo;
 import com.abn.dish.repo.RecipeRepo;
 import com.abn.dish.service.RecipeService;
 
@@ -43,10 +40,10 @@ public class RecipeServiceImpl implements RecipeService {
 	public DishcreateDto createRecipe(DishcreateDto dishDto) {
 
 		log.debug("Save recipe info{}" + dishDto.getClass());
-		
+
 		Dish dish = recipeRepo.save(mappers.INSTANCE.mapDishRequest(dishDto));
 		return mappers.INSTANCE.mapDishResponse(dish);
-		
+
 	}
 
 	@Transactional
@@ -55,11 +52,11 @@ public class RecipeServiceImpl implements RecipeService {
 		log.debug("Find recipe id before update{}" + dishDto.getClass());
 
 		recipeRepo.findById(dishDto.getId())
-				.orElseThrow(() -> new RecipeNotFoundException(Constants.RECIPIE_ID_NOT_FOUND + dishDto.getId()));
+		.orElseThrow(() -> new RecipeNotFoundException(Constants.RECIPIE_ID_NOT_FOUND + dishDto.getId()));
 
 		log.debug("Found receipe id to update {}" + dishDto.getClass());
 		Dish dish =recipeRepo.save(mappers.INSTANCE.updateDishRequest(dishDto));
-				return mappers.INSTANCE.updateDishResponse(dish); 
+		return mappers.INSTANCE.updateDishResponse(dish); 
 	}
 
 	@Override
@@ -75,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
 	@Transactional(readOnly = true)
 	public List<Dish> findByCriteria(LocalDateTime date, boolean isVeg, int suitableFor, List<String> ingredients,
 			String instructions, Pageable pageable)  {
-		
+
 		Page page = recipeRepo.findAll(new Specification<Dish>() {
 			@Override
 			public Predicate toPredicate(Root<Dish> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {			
@@ -93,9 +90,9 @@ public class RecipeServiceImpl implements RecipeService {
 		page.getTotalPages();
 		return page.getContent();
 	}
-	
 
-		
-	}
+
+
+}
 
 

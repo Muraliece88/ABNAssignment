@@ -94,15 +94,15 @@ class RecipeServiceImplTest {
 		mockservice = new RecipeServiceImpl(mockReciperepo);
 	}
 
-	
+
 	/**
- *  Scenario to verify creation in via service
- */
+	 *  Scenario to verify creation in via service
+	 */
 	@Test
 
 	@DisplayName("Create receipe")
 	void testCreateRecipe() {
-		
+
 		when(mockReciperepo.save(Mockito.any(Dish.class))).thenReturn(dish);
 		DishcreateDto returned = mockservice.createRecipe(dishcreate);
 		Dish dish = xMapper.INSTANCE.mapDishRequest(returned);
@@ -111,11 +111,11 @@ class RecipeServiceImplTest {
 		assertEquals(dishcreate.getDishName(), dish.getNameOfDish());
 
 	}
-	
+
 	/**
- *  Scenario to verify exception while receipe update via service
+	 *  Scenario to verify exception while receipe update via service
 	 * @throws RecipeNotFoundException 
- */
+	 */
 	@Test
 
 	@DisplayName("updating receipe")

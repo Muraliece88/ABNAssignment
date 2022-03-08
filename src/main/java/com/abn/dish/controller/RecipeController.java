@@ -1,6 +1,5 @@
 package com.abn.dish.controller;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abn.dish.constant.Constants;
@@ -52,10 +49,9 @@ import lombok.extern.slf4j.Slf4j;
 public class RecipeController {
 
 	private final RecipeService recipeService;
-	 private static final Gson gson = new Gson();
+	private static final Gson gson = new Gson();
 
 	@Operation(summary = "Create a recipe")
-	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@PostMapping
 	public ResponseEntity<DishcreateDto> createRecipe(@RequestBody @Valid DishcreateDto dishDto) {
 		log.debug("Create recipe for {}", dishDto.getDishName());
@@ -66,9 +62,9 @@ public class RecipeController {
 	@Operation(summary = "Update a recipe")
 	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@PutMapping
-	 @ApiResponses(value = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation =
-     DishDto.class))), @ApiResponse(responseCode = "404", description = "Dish not found", content
-     = @Content(schema = @Schema(hidden = true)))})
+	@ApiResponses(value = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation =
+	DishDto.class))), @ApiResponse(responseCode = "500", description = "Dish id not found", content
+	= @Content(schema = @Schema(hidden = true)))})
 	public ResponseEntity<DishDto> updateRecipe(@RequestBody @Valid DishDto dishDto) throws RecipeNotFoundException {
 		log.debug("Update recipe {}", dishDto.getId());
 		return ResponseEntity.ok(recipeService.updateRecipe(dishDto));
@@ -77,14 +73,13 @@ public class RecipeController {
 
 
 	@DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> deleteRecipeById(@PathVariable Long id) throws RecipeNotFoundException {
-        log.debug("Delete recipe by id {}", id);
-        recipeService.deleteRecipeById(id);
-        return ResponseEntity.ok(gson.toJson(Constants.DISH_DELETE+id));
-    }
-	
+	public ResponseEntity<String> deleteRecipeById(@PathVariable Long id) throws RecipeNotFoundException {
+		log.debug("Delete recipe by id {}", id);
+		recipeService.deleteRecipeById(id);
+		return ResponseEntity.ok(gson.toJson(Constants.DISH_DELETE+id));
+	}
+
 	@Operation(summary = "Get recipes based any condition", description = "gets the recipe info based on different search params")
-	@ApiModelProperty(notes = "Creation date as dd-MM-yyyy HH:mm", required = true)
 	@GetMapping(value = "/searchrecipe")
 	public ResponseEntity<Page<DishDto>> getRecipe( 
 			@RequestParam(required=true) @DateTimeFormat(pattern="dd‐MM‐yyyy HH:mm") LocalDateTime  createdDate,
@@ -100,8 +95,8 @@ public class RecipeController {
 		final int end = Math.min((start + pageable.getPageSize()), dishList.size());
 		final Page<Dish> dishPage = new PageImpl<>(dishList.subList(start, end), pageable, dishList.size());
 		return ResponseEntity.ok(RecipeMappers.INSTANCE.toPageableresp(dishPage));
-	
+
 
 	}
-	
+
 }
